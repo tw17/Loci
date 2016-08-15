@@ -23,7 +23,7 @@ namespace Loci.ViewModels
 
         #region Commands
 
-        public ICommand OKCommand { get; private set; }
+        public ICommand OkCommand { get; private set; }
 
         #endregion
 
@@ -40,11 +40,9 @@ namespace Loci.ViewModels
             get { return _excludePatternsString; }
             set
             {
-                if (_excludePatternsString != value)
-                {
-                    _excludePatternsString = value;
-                    OnPropertyChanged("ExcludePatternsString");
-                }
+                if (_excludePatternsString == value) return;
+                _excludePatternsString = value;
+                OnPropertyChanged("ExcludePatternsString");
             }
         }
 
@@ -61,14 +59,14 @@ namespace Loci.ViewModels
             NeutralLanguage = _configuration.NeutralLanguage;
             AvailableLanguages = new ObservableCollection<CultureInfo>(CultureInfo.GetCultures(CultureTypes.AllCultures).Except(new [] {CultureInfo.InvariantCulture}));
             SelectedLanguages = new ObservableCollection<CultureInfo>(_configuration.SupportedLanguages.ToArray());
-            ExcludePatternsString = String.Join("\r\n", _configuration.ExcludePatterns);
-            OKCommand = new RelayCommand<Window>(OKCommandHandler);
+            ExcludePatternsString = string.Join("\r\n", _configuration.ExcludePatterns);
+            OkCommand = new RelayCommand<Window>(OKCommandHandler);
         }
 
         private void OKCommandHandler(Window window)
         {
             _configuration.ExcludePatterns.Clear();
-            if (!String.IsNullOrWhiteSpace(ExcludePatternsString))
+            if (!string.IsNullOrWhiteSpace(ExcludePatternsString))
             {
                 _configuration.ExcludePatterns.AddRange(ExcludePatternsString.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None));   
             }

@@ -17,7 +17,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Menu IsMainMenu="True" Grid.Row="0">
+        <Menu IsMainMenu="True" Grid.Row="0" Background="WhiteSmoke">
             <MenuItem Header="_Project">
                 <MenuItem Header="_New" Command="{Binding NewProjectCommand}" />
                 <MenuItem Header="_Load" Command="{Binding LoadProjectCommand}" />
@@ -35,7 +35,7 @@
             </MenuItem>
         </Menu>
 
-        <ToolBar Grid.Row="1" IsManipulationEnabled="False" HorizontalAlignment="Stretch" Background="WhiteSmoke"
+        <ToolBar Grid.Row="1" IsManipulationEnabled="False" HorizontalAlignment="Stretch" Background="WhiteSmoke" ToolBarTray.IsLocked="True"
                  Loaded="ToolBar_Loaded">
             <Button Command="{Binding ExportCommand}"  IsEnabled="{Binding IsLoaded}">
                 <Button.ToolTip>Export</Button.ToolTip>
@@ -89,7 +89,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <TreeView Name="ResourceTreeView" ItemsSource="{Binding FirstGeneration}" Grid.Column="0"
+            <TreeView Name="ResourceTreeView" ItemsSource="{Binding FirstGeneration}" Grid.Column="0" BorderThickness="0" Padding="5"
                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                       SelectedItemChanged="ResourceTreeView_OnSelectedItemChanged">
                 <TreeView.ItemContainerStyle>

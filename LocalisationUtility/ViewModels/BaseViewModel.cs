@@ -8,11 +8,7 @@ namespace Loci.ViewModels
 
         protected void OnPropertyChanged(string name)
         {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

@@ -16,13 +16,9 @@ namespace Loci
     /// </summary>
     public partial class App : IDisposable
     {
-        //private static readonly UnityContainer UnityContainer = new UnityContainer();
-
-        //private static readonly IEventAggregator Aggregator = new EventAggregator();
-
         public static IContainer Container { get; set; }
 
-        private static readonly ILog _logger =
+        private static readonly ILog Logger =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>

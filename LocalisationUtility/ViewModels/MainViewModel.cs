@@ -22,21 +22,18 @@ namespace Loci.ViewModels
     public class MainViewModel : BaseViewModel, IDisposable
     {
         #region Private Fields
-        private Configuration mConfiguration;
-        private IConfigurationLoader mConfigurationLoader;
-        private IMessenger _messenger;
-        private ReadOnlyCollection<TreeNodeViewModel> mFirstGeneration;
-        private TreeNodeViewModel mRootNode;
-        private UserControl mSelectedNodeDetailsView;
-        private DataTable mDataTable = new DataTable();
-        private BaseNode mSelectedNode;
-        private Regex mExcludePatterns;
-        private bool mIsLoaded;
+        private readonly Configuration _configuration;
+        private readonly IConfigurationLoader _configurationLoader;
+        private readonly IMessenger _messenger;
+        private ReadOnlyCollection<TreeNodeViewModel> _firstGeneration;
+        private TreeNodeViewModel _rootNode;
+        private UserControl _selectedNodeDetailsView;
+        private readonly DataTable _dataTable = new DataTable();
+        private BaseNode _selectedNode;
+        private Regex _excludePatterns;
+        private bool _isLoaded;
 
-        public DataView DefaultView
-        {
-            get { return mDataTable.AsDataView(); }
-        }
+        public DataView DefaultView => _dataTable.AsDataView();
 
         #endregion
 
@@ -57,14 +54,12 @@ namespace Loci.ViewModels
 
         public UserControl SelectedNodeDetailsView
         {
-            get { return mSelectedNodeDetailsView; }
+            get { return _selectedNodeDetailsView; }
             private set
             {
-                if (mSelectedNodeDetailsView != value)
-                {
-                    mSelectedNodeDetailsView = value;
-                    OnPropertyChanged("SelectedNodeDetailsView");
-                }
+                if (Equals(_selectedNodeDetailsView, value)) return;
+                _selectedNodeDetailsView = value;
+                OnPropertyChanged("SelectedNodeDetailsView");
             }
         }
 
@@ -76,31 +71,26 @@ namespace Loci.ViewModels
         /// </value>
         public bool IsLoaded
         {
-            get { return mIsLoaded; }
+            get { return _isLoaded; }
             set
             {
-                if (value != mIsLoaded)
-                {
-                    mIsLoaded = value;
-                    OnPropertyChanged("IsLoaded");
-                }
+                if (value == _isLoaded) return;
+                _isLoaded = value;
+                OnPropertyChanged("IsLoaded");
             }
         }
 
-        public bool PendingChanges
-        {
-            get { return mDataTable.GetChanges() != null; }
-        }
+        public bool PendingChanges => _dataTable.GetChanges() != null;
 
         #endregion
 
         public MainViewModel(IMessenger messenger, IConfigurationLoader configurationLoader, Configuration configuration)
         {
             _messenger = messenger;
-            mConfigurationLoader = configurationLoader;
+            _configurationLoader = configurationLoader;
             _messenger.Register<SettingsChangedEvent>(this, SettingsChangedEventHandler);
             _messenger.Register<NewProjectCreatedEventArgs>(this, NewProjectCreatedEventHandler);
-            mConfiguration = configuration;
+            _configuration = configuration;
 
             NewProjectCommand = new RelayCommand(NewProjectCommandHandler);
             LoadProjectCommand = new RelayCommand(LoadProjectCommandHandler);
@@ -114,18 +104,18 @@ namespace Loci.ViewModels
 
         private void NewProjectCreatedEventHandler(NewProjectCreatedEventArgs args)
         {
-            mConfiguration.ExcludePatterns.Clear();
+            _configuration.ExcludePatterns.Clear();
 
-            mConfiguration.VisualStudioSolutionPath = args.VisualStudioSolutionPath;
+            _configuration.VisualStudioSolutionPath = args.VisualStudioSolutionPath;
 
-            mConfiguration.LocalisationProjectPath = args.LocalisationProjectPath;
+            _configuration.LocalisationProjectPath = args.LocalisationProjectPath;
 
-            mConfiguration.NeutralLanguage = args.NeutralLanguage;
+            _configuration.NeutralLanguage = args.NeutralLanguage;
 
-            mConfiguration.SupportedLanguages.Clear();
-            mConfiguration.SupportedLanguages.AddRange(args.SupportedLanguages);
+            _configuration.SupportedLanguages.Clear();
+            _configuration.SupportedLanguages.AddRange(args.SupportedLanguages);
 
-            mConfigurationLoader.SaveConfiguration(mConfiguration, args.LocalisationProjectPath);
+            _configurationLoader.SaveConfiguration(_configuration, args.LocalisationProjectPath);
 
             LoadLocalisationProject(args.LocalisationProjectPath);
         }
@@ -137,19 +127,19 @@ namespace Loci.ViewModels
 
         private void SettingsChangedEventHandler(SettingsChangedEvent args)
         {
-            mConfigurationLoader.SaveConfiguration(mConfiguration, mConfiguration.LocalisationProjectPath);
-            if (mConfiguration.ExcludePatterns.Count > 0)
+            _configurationLoader.SaveConfiguration(_configuration, _configuration.LocalisationProjectPath);
+            if (_configuration.ExcludePatterns.Count > 0)
             {
-                var stringPattern = string.Join("|", mConfiguration.ExcludePatterns);
+                var stringPattern = string.Join("|", _configuration.ExcludePatterns);
                 var finalPattern = $"^({stringPattern.Replace(@".", @"\.").Replace(@"*", @"\S*")})$";
-                mExcludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);   
+                _excludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);   
             }
             else
             {
-                mExcludePatterns = null;
+                _excludePatterns = null;
             }
-            if (mSelectedNode != null)
-                SetSelectedNode(mSelectedNode);
+            if (_selectedNode != null)
+                SetSelectedNode(_selectedNode);
         }
 
         private void SettingsCommandHandler()
@@ -165,32 +155,32 @@ namespace Loci.ViewModels
         private void ExportCommandHandler()
         {
             var exportWindow = App.Container.Resolve<ExportWindow>();
-            exportWindow.Initialize(mRootNode.Node);
+            exportWindow.Initialize(_rootNode.Node);
             exportWindow.ShowDialog();
         }
 
         private void ImportCommandHandler()
         {
             var importWindow = App.Container.Resolve<ImportWindow>();
-            importWindow.Initialize(mRootNode.Node);
+            importWindow.Initialize(_rootNode.Node);
             importWindow.ShowDialog();
         }
 
         private void LoadLocalisationProject(string projectPath)
         {
-            var config = mConfigurationLoader.LoadConfiguration(projectPath);
+            var config = _configurationLoader.LoadConfiguration(projectPath);
 
-            mConfiguration.SupportedLanguages.Clear();
-            mConfiguration.SupportedLanguages.AddRange(config.SupportedLanguages.ToArray());
+            _configuration.SupportedLanguages.Clear();
+            _configuration.SupportedLanguages.AddRange(config.SupportedLanguages.ToArray());
 
-            mConfiguration.ExcludePatterns.Clear();
-            mConfiguration.ExcludePatterns.AddRange(config.ExcludePatterns.ToArray());
+            _configuration.ExcludePatterns.Clear();
+            _configuration.ExcludePatterns.AddRange(config.ExcludePatterns.ToArray());
 
-            mConfiguration.NeutralLanguage = config.NeutralLanguage;
-            mConfiguration.VisualStudioSolutionPath = config.VisualStudioSolutionPath;
-            mConfiguration.LocalisationProjectPath = config.LocalisationProjectPath;
+            _configuration.NeutralLanguage = config.NeutralLanguage;
+            _configuration.VisualStudioSolutionPath = config.VisualStudioSolutionPath;
+            _configuration.LocalisationProjectPath = config.LocalisationProjectPath;
 
-            LoadSolution(mConfiguration.VisualStudioSolutionPath);
+            LoadSolution(_configuration.VisualStudioSolutionPath);
             IsLoaded = true;
         }
 
@@ -203,37 +193,36 @@ namespace Loci.ViewModels
 
         #region Command Handlers
 
-        private void DiffCommandHandler()
+        private static void DiffCommandHandler()
         {
             //var diffWindow = mUnityContainer.Resolve<DiffWindow>();
-            //diffWindow.Initialize(mRootNode.Node, mConfiguration.VisualStudioSolutionPath);
+            //diffWindow.Initialize(_rootNode.Node, _configuration.VisualStudioSolutionPath);
             //diffWindow.ShowDialog();
         }
 
         private void PreFillCommandHandler()
         {
-            if (mConfiguration.ExcludePatterns.Count > 0)
+            if (_configuration.ExcludePatterns.Count > 0)
             {
-                var stringPattern = String.Join("|", mConfiguration.ExcludePatterns);
-                var finalPattern = String.Format("^({0})$", stringPattern.Replace(@".", @"\.").Replace(@"*", @"\S*"));
-                mExcludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                var stringPattern = string.Join("|", _configuration.ExcludePatterns);
+                var finalPattern = $"^({stringPattern.Replace(@".", @"\.").Replace(@"*", @"\S*")})$";
+                _excludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
             }
             else
             {
-                mExcludePatterns = null;
+                _excludePatterns = null;
             }
 
-            Dictionary<string, string> lookUpDictionary = new Dictionary<string, string>();
+            var lookUpDictionary = new Dictionary<string, string>();
 
-            List<Translation> untranslated = new List<Translation>();
-            List<Translation> translated = new List<Translation>();
+            var untranslated = new List<Translation>();
+            var translated = new List<Translation>();
 
 
-            var allResources = SolutionLoader.GetAllResourcesUnderNode(mRootNode.Node).ToList();
+            var allResources = SolutionLoader.GetAllResourcesUnderNode(_rootNode.Node).ToList();
 
-            var total = allResources.Count();
-            var resourceCount = 1;
-            var untranslatedCount = 0;
+            //var resourceCount = 1;
+            //var untranslatedCount = 0;
             var culture = CultureInfo.GetCultureInfo("fi");
             //foreach (var resource in allResources.TakeWhile(resource => !worker.CancellationPending))
             foreach (var resource in allResources)
@@ -243,12 +232,12 @@ namespace Loci.ViewModels
                 foreach (var pNode in SolutionLoader.GetResXNodes(resource.Location))
                 {
                     if (!SolutionLoader.IsResXNodeTranslatable(pNode)) continue;
-                    //if (mExcludePatterns != null && mExcludePatterns.IsMatch(pNode.Name)) continue; //regex here
+                    //if (_excludePatterns != null && _excludePatterns.IsMatch(pNode.Name)) continue; //regex here
 
 
                     var resXnodeValue = SolutionLoader.GetResXNodeValue(pNode);
                     if (String.IsNullOrWhiteSpace(resXnodeValue.ToString())) continue;
-                    if (mExcludePatterns != null && mExcludePatterns.IsMatch((string)resXnodeValue)) continue; //regex here
+                    if (_excludePatterns != null && _excludePatterns.IsMatch((string)resXnodeValue)) continue; //regex here
                     //worksheet.Cells[rowCount, 1].Value = resource.Location;
                     //worksheet.Cells[rowCount, 2].Value = pNode.Name;
                     //worksheet.Cells[rowCount, 3].Value = resXnodeValue;
@@ -260,7 +249,7 @@ namespace Loci.ViewModels
                         obj = SolutionLoader.GetResXNodeValue(resXnode);
                     if (IsUntranslated((string) obj))
                     {
-                        untranslatedCount++;
+                        //untranslatedCount++;
                         untranslated.Add(new Translation()
                         {
                             Culture = culture,
@@ -275,11 +264,11 @@ namespace Loci.ViewModels
                             lookUpDictionary.Add(resXnodeValue.ToString(), (string)obj);
                     }
                     //worksheet.Cells[rowCount, column + 4].Value = obj;
-                    resourceCount++;
+                    //resourceCount++;
                 }
             }
 
-            var count = 0;
+            //var count = 0;
             foreach (var item in untranslated)
             {
                 if (lookUpDictionary.ContainsKey(item.NeutralValue))
@@ -288,11 +277,9 @@ namespace Loci.ViewModels
                     translated.Add(item);
                     continue;
                 }
-                if (lookUpDictionary.ContainsKey(item.NeutralValue.ToLowerInvariant()))
-                {
-                    item.TranslatedValue = lookUpDictionary[item.NeutralValue];
-                    translated.Add(item);
-                }
+                if (!lookUpDictionary.ContainsKey(item.NeutralValue.ToLowerInvariant())) continue;
+                item.TranslatedValue = lookUpDictionary[item.NeutralValue];
+                translated.Add(item);
             }
 
             foreach (var translation in translated)
@@ -303,31 +290,26 @@ namespace Loci.ViewModels
 
         public void SaveResources(Translation translation)
         {
-            string cultureResXfileName = SolutionLoader.GetCultureResXFileName(translation.Location, translation.Culture);
-            List<ResXDataNode> resXnodes1 = SolutionLoader.GetResXNodes(translation.Location);
-            List<ResXDataNode> resXnodes2 = SolutionLoader.GetResXNodes(cultureResXfileName);
-            using (ResXResourceWriter resXresourceWriter = new ResXResourceWriter(cultureResXfileName))
+            var cultureResXfileName = SolutionLoader.GetCultureResXFileName(translation.Location, translation.Culture);
+            var resXnodes1 = SolutionLoader.GetResXNodes(translation.Location);
+            var resXnodes2 = SolutionLoader.GetResXNodes(cultureResXfileName);
+            using (var resXresourceWriter = new ResXResourceWriter(cultureResXfileName))
             {
-                foreach (ResXDataNode resXdataNode in resXnodes2)
+                foreach (var resXdataNode in resXnodes2)
                 {
                     if (!SolutionLoader.IsResXNodeTranslatable(resXdataNode) && SolutionLoader.FindResXNode(resXnodes1, resXdataNode.Name) != null)
                         resXresourceWriter.AddResource(resXdataNode);
                 }
 
-                foreach (ResXDataNode resXdataNode in resXnodes2)
+                foreach (var resXdataNode in resXnodes2)
                 {
-                    if (SolutionLoader.IsResXNodeTranslatable(resXdataNode))
+                    if (!SolutionLoader.IsResXNodeTranslatable(resXdataNode)) continue;
+                    if (resXdataNode.Name == translation.Key)
                     {
-                        if (resXdataNode.Name == translation.Key)
-                        {
-                            resXresourceWriter.AddResource(new ResXDataNode(translation.Key, translation.TranslatedValue));
-                            return;
-                        }
-                        else
-                        {
-                            resXresourceWriter.AddResource(resXdataNode);
-                        }
+                        resXresourceWriter.AddResource(new ResXDataNode(translation.Key, translation.TranslatedValue));
+                        return;
                     }
+                    resXresourceWriter.AddResource(resXdataNode);
                 }
                 resXresourceWriter.AddResource(new ResXDataNode(translation.Key, translation.TranslatedValue));
             }
@@ -376,7 +358,7 @@ namespace Loci.ViewModels
 
         public void SetSelectedNode(BaseNode node)
         {
-            mSelectedNode = node;
+            _selectedNode = node;
             if (node.NodeType == TreeNodeType.Resource)
             {
                 LoadResources(node as Resource);
@@ -386,34 +368,34 @@ namespace Loci.ViewModels
 
         private void LoadResources(Resource resource)
         {
-            mDataTable.Clear();
-            mDataTable.Columns.Clear();
+            _dataTable.Clear();
+            _dataTable.Columns.Clear();
             
             var resXnodes = SolutionLoader.GetResXNodes(resource.Location);
 
             //Create Columns
-            mDataTable.Columns.Add(new DataColumn("Key") {ReadOnly = true});
-            mDataTable.Columns.Add(new DataColumn("Neutral"));
+            _dataTable.Columns.Add(new DataColumn("Key") {ReadOnly = true});
+            _dataTable.Columns.Add(new DataColumn("Neutral"));
 
             //Create Language Headers
-            foreach (var language in mConfiguration.SupportedLanguages)
+            foreach (var language in _configuration.SupportedLanguages)
             {
-                mDataTable.Columns.Add(new DataColumn(language.EnglishName));
+                _dataTable.Columns.Add(new DataColumn(language.EnglishName));
             }
 
             foreach (var pNode in resXnodes)
             {
                 var resXnodeValue = SolutionLoader.GetResXNodeValue(pNode);
-                if (SolutionLoader.IsResXNodeTranslatable(pNode) && (mExcludePatterns == null || !mExcludePatterns.IsMatch(pNode.Name))) //regex here
+                if (SolutionLoader.IsResXNodeTranslatable(pNode) && (_excludePatterns == null || !_excludePatterns.IsMatch(pNode.Name))) //regex here
                 {
-                    var dataRow = mDataTable.NewRow();
+                    var dataRow = _dataTable.NewRow();
                     dataRow[0] = pNode.Name;
                     dataRow[1] = resXnodeValue;
 
-                    for (var i = 2; i < mConfiguration.SupportedLanguages.Count + 2; i++)
+                    for (var i = 2; i < _configuration.SupportedLanguages.Count + 2; i++)
                     {
                         var cultureResXnodes = SolutionLoader.GetCultureResXNodes(resource.Location,
-                            mConfiguration.SupportedLanguages.ElementAt(i - 2));
+                            _configuration.SupportedLanguages.ElementAt(i - 2));
                         object obj = null;
                         var resXnode = SolutionLoader.FindResXNode(cultureResXnodes, pNode.Name);
                         if (resXnode != null)
@@ -421,17 +403,17 @@ namespace Loci.ViewModels
                         dataRow[i] = obj;
                     }
 
-                    mDataTable.Rows.Add(dataRow);
+                    _dataTable.Rows.Add(dataRow);
                 }
             }
-            mDataTable.AcceptChanges();
+            _dataTable.AcceptChanges();
             OnPropertyChanged("DefaultView");
         }
 
         public void LoadSolutionTree(BaseNode rootNode)
         {
-            mRootNode = new TreeNodeViewModel(rootNode) {IsExpanded = true};
-            mFirstGeneration = new ReadOnlyCollection<TreeNodeViewModel>(new[] {mRootNode});
+            _rootNode = new TreeNodeViewModel(rootNode) {IsExpanded = true};
+            _firstGeneration = new ReadOnlyCollection<TreeNodeViewModel>(new[] {_rootNode});
             OnPropertyChanged("FirstGeneration");
         }
 
@@ -445,7 +427,7 @@ namespace Loci.ViewModels
         /// </summary>
         public ReadOnlyCollection<TreeNodeViewModel> FirstGeneration
         {
-            get { return mFirstGeneration; }
+            get { return _firstGeneration; }
         }
 
         #endregion // FirstGeneration

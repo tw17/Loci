@@ -7,6 +7,6 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <DataGrid AutoGenerateColumns="True" CanUserAddRows="False" CanUserReorderColumns="False"
-                  ItemsSource="{Binding DefaultView}" />
+                  ItemsSource="{Binding DefaultView}" BorderThickness="0" HeadersVisibility="Column" />
     </Grid>
 </UserControl>

@@ -22,11 +22,9 @@ namespace Loci.ViewModels
             get { return _saveLocation; }
             set
             {
-                if (_saveLocation != value)
-                {
-                    _saveLocation = value;
-                    OnPropertyChanged("SaveLocation");
-                }
+                if (_saveLocation == value) return;
+                _saveLocation = value;
+                OnPropertyChanged("SaveLocation");
             }
         }
 
@@ -35,11 +33,9 @@ namespace Loci.ViewModels
             get { return _solutionLocation; }
             set
             {
-                if (_solutionLocation != value)
-                {
-                    _solutionLocation = value;
-                    OnPropertyChanged("SolutionLocation");
-                }
+                if (_solutionLocation == value) return;
+                _solutionLocation = value;
+                OnPropertyChanged("SolutionLocation");
             }
         }
 
@@ -100,7 +96,7 @@ namespace Loci.ViewModels
 
         private void SelectSaveLocationCommandHandler()
         {
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog
+            var dlg = new Microsoft.Win32.SaveFileDialog
             {
                 FileName = "LocalisationProject",
                 DefaultExt = ".loci",

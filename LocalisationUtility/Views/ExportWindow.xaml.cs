@@ -9,7 +9,7 @@ namespace Loci.Views
     /// <summary>
     /// Interaction logic for ExportWindow.xaml
     /// </summary>
-    public partial class ExportWindow : Window
+    public partial class ExportWindow
     {
         private readonly ExportViewModel _viewModel;
 

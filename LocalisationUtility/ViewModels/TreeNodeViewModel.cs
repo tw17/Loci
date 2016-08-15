@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Loci.Enums;
 using Loci.Models;
 
@@ -13,13 +10,9 @@ namespace Loci.ViewModels
     {
         #region Data
 
-        private readonly ReadOnlyCollection<TreeNodeViewModel> _children;
-        private readonly TreeNodeViewModel mParent;
-        private readonly BaseNode mNode;
-
-        private bool mIsExpanded;
-        private bool mIsSelected;
-        private string mIcon;
+        private bool _isExpanded;
+        private bool _isSelected;
+        private string _icon;
 
         #endregion // Data
 
@@ -30,40 +23,28 @@ namespace Loci.ViewModels
 
         private TreeNodeViewModel(BaseNode node, TreeNodeViewModel parent)
         {
-            mNode = node;
-            mParent = parent;
+            Node = node;
+            Parent = parent;
 
-            _children = new ReadOnlyCollection<TreeNodeViewModel>(
-                (from child in mNode.Children
+            Children = new ReadOnlyCollection<TreeNodeViewModel>(
+                (from child in Node.Children
                     select new TreeNodeViewModel(child, this))
-                    .ToList<TreeNodeViewModel>());
+                    .ToList());
         }
 
         #region Person Properties
 
-        public ReadOnlyCollection<TreeNodeViewModel> Children
-        {
-            get { return _children; }
-        }
+        public ReadOnlyCollection<TreeNodeViewModel> Children { get; }
 
-        public string Name
-        {
-            get { return mNode.Name; }
-        }
+        public string Name => Node.Name;
 
-        public TreeNodeType NodeType
-        {
-            get { return mNode.NodeType; }
-        }
+        public TreeNodeType NodeType => Node.NodeType;
 
         #endregion // Person Properties
 
         #region Presentation Members
 
-        public BaseNode Node
-        {
-            get { return mNode; }
-        }
+        public BaseNode Node { get; }
 
         #region IsExpanded
 
@@ -73,19 +54,19 @@ namespace Loci.ViewModels
         /// </summary>
         public bool IsExpanded
         {
-            get { return mIsExpanded; }
+            get { return _isExpanded; }
             set
             {
-                if (value != mIsExpanded)
+                if (value != _isExpanded)
                 {
-                    mIsExpanded = value;
-                    this.OnPropertyChanged("IsExpanded");
-                    this.OnPropertyChanged("Icon");
+                    _isExpanded = value;
+                    OnPropertyChanged("IsExpanded");
+                    OnPropertyChanged("Icon");
                 }
 
                 // Expand all the way up to the root.
-                if (mIsExpanded && mParent != null)
-                    mParent.IsExpanded = true;
+                if (_isExpanded && Parent != null)
+                    Parent.IsExpanded = true;
             }
         }
 
@@ -95,12 +76,12 @@ namespace Loci.ViewModels
         {
             get
             {
-                if (mNode.NodeType == TreeNodeType.Solution)
+                if (Node.NodeType == TreeNodeType.Solution)
                     return "/Resources/Images/Solution.png";
-                if (mNode.NodeType == TreeNodeType.Project)
+                if (Node.NodeType == TreeNodeType.Project)
                     return "/Resources/Images/Project.png";
-                if (mNode.NodeType == TreeNodeType.Folder)
-                    return mIsExpanded ? "/Resources/Images/OpenFolder.png" : "/Resources/Images/ClosedFolder.png";
+                if (Node.NodeType == TreeNodeType.Folder)
+                    return _isExpanded ? "/Resources/Images/OpenFolder.png" : "/Resources/Images/ClosedFolder.png";
                 return "/Resources/Images/Resource.png";
             }
         }
@@ -113,14 +94,12 @@ namespace Loci.ViewModels
         /// </summary>
         public bool IsSelected
         {
-            get { return mIsSelected; }
+            get { return _isSelected; }
             set
             {
-                if (value != mIsSelected)
-                {
-                    mIsSelected = value;
-                    this.OnPropertyChanged("IsSelected");
-                }
+                if (value == _isSelected) return;
+                _isSelected = value;
+                OnPropertyChanged("IsSelected");
             }
         }
 
@@ -130,20 +109,17 @@ namespace Loci.ViewModels
 
         public bool NameContainsText(string text)
         {
-            if (String.IsNullOrEmpty(text) || String.IsNullOrEmpty(this.Name))
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(Name))
                 return false;
 
-            return this.Name.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) > -1;
+            return Name.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) > -1;
         }
 
         #endregion // NameContainsText
 
         #region Parent
 
-        public TreeNodeViewModel Parent
-        {
-            get { return mParent; }
-        }
+        public TreeNodeViewModel Parent { get; }
 
         #endregion // Parent
 

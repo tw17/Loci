@@ -48,6 +48,6 @@
                 <controls:LanguageSelector Grid.Row="3" AvailableLanguages="{Binding DataContext.AvailableLanguages, Mode=TwoWay, ElementName=MainSettingsWindow}" SelectedLanguages="{Binding DataContext.SelectedLanguages, Mode=TwoWay, ElementName=MainSettingsWindow}"/>
             </Grid>
         </Grid>
-        <Button Grid.Row="1" HorizontalAlignment="Right" Content="OK" Width="60" Margin="4" Command="{Binding OKCommand}" CommandParameter="{Binding ElementName=MainSettingsWindow}"/>
+        <Button Grid.Row="1" HorizontalAlignment="Right" Content="OK" Width="60" Margin="4" Command="{Binding OkCommand}" CommandParameter="{Binding ElementName=MainSettingsWindow}"/>
     </Grid>
 </Window>

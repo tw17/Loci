@@ -28,18 +28,16 @@ namespace Loci.ViewModels
     {
         #region Private Fields
 
-        private BackgroundWorker mExportBackgroundWorker;
+        private readonly BackgroundWorker _exportBackgroundWorker;
         private IMessenger _messenger;
-        private Configuration mConfiguration;
-        private BaseNode mRootNode;
-        private CultureInfo mSelectedAvailableLanguage;
-        private CultureInfo mSelectedLanguage;
-        private string mSaveLocation;
-        private ExcelFormat mExportExcelFormat;
-        private double mExportProgress;
-        private string mExportStatusString;
-        private bool mIsExporting;
-        private Regex mExcludePatterns;
+        private readonly Configuration _configuration;
+        private BaseNode _rootNode;
+        private string _saveLocation;
+        private ExcelFormat _exportExcelFormat;
+        private double _exportProgress;
+        private string _exportStatusString;
+        private bool _isExporting;
+        private readonly Regex _excludePatterns;
 
         #endregion
 
@@ -59,66 +57,56 @@ namespace Loci.ViewModels
 
         public ExcelFormat ExportExcelFormat
         {
-            get { return mExportExcelFormat; }
+            get { return _exportExcelFormat; }
             set
             {
-                if (mExportExcelFormat != value)
-                {
-                    mExportExcelFormat = value;
-                    OnPropertyChanged("ExportExcelFormat");
-                }
+                if (_exportExcelFormat == value) return;
+                _exportExcelFormat = value;
+                OnPropertyChanged("ExportExcelFormat");
             }
         }
 
         public bool IsExporting
         {
-            get { return mIsExporting; }
+            get { return _isExporting; }
             set
             {
-                if (mIsExporting != value)
-                {
-                    mIsExporting = value;
-                    OnPropertyChanged("IsExporting");
-                }
+                if (_isExporting == value) return;
+                _isExporting = value;
+                OnPropertyChanged("IsExporting");
             }
         }
 
         public double ExportProgress
         {
-            get { return mExportProgress; }
+            get { return _exportProgress; }
             private set
             {
-                if (mExportProgress != value)
-                {
-                    mExportProgress = value;
-                    OnPropertyChanged("ExportProgress");
-                }
+                if (_exportProgress == value) return;
+                _exportProgress = value;
+                OnPropertyChanged("ExportProgress");
             }
         }
 
         public string ExportStatusString
         {
-            get { return mExportStatusString; }
+            get { return _exportStatusString; }
             private set
             {
-                if (mExportStatusString != value)
-                {
-                    mExportStatusString = value;
-                    OnPropertyChanged("ExportStatusString");
-                }
+                if (_exportStatusString == value) return;
+                _exportStatusString = value;
+                OnPropertyChanged("ExportStatusString");
             }
         }
 
         public string SaveLocation
         {
-            get { return mSaveLocation; }
+            get { return _saveLocation; }
             set
             {
-                if (mSaveLocation != value)
-                {
-                    mSaveLocation = value;
-                    OnPropertyChanged("SaveLocation");
-                }
+                if (_saveLocation == value) return;
+                _saveLocation = value;
+                OnPropertyChanged("SaveLocation");
             }
         }
 
@@ -129,33 +117,33 @@ namespace Loci.ViewModels
         public ExportViewModel(IMessenger messenger, Configuration configuration)
         {
             _messenger = messenger;
-            mConfiguration = configuration;
+            _configuration = configuration;
 
-            if (mConfiguration.ExcludePatterns.Count > 0)
+            if (_configuration.ExcludePatterns.Count > 0)
             {
-                var stringPattern = String.Join("|", mConfiguration.ExcludePatterns);
-                var finalPattern = String.Format("^({0})$", stringPattern.Replace(@".", @"\.").Replace(@"*", @"\S*"));
-                mExcludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                var stringPattern = string.Join("|", _configuration.ExcludePatterns);
+                var finalPattern = $"^({stringPattern.Replace(@".", @"\.").Replace(@"*", @"\S*")})$";
+                _excludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
             }
             else
             {
-                mExcludePatterns = null;
+                _excludePatterns = null;
             }
 
-            AvailableLanguages = new ObservableCollection<CultureInfo>(mConfiguration.SupportedLanguages.ToArray());
+            AvailableLanguages = new ObservableCollection<CultureInfo>(_configuration.SupportedLanguages.ToArray());
             SelectedLanguages = new ObservableCollection<CultureInfo>();
             SelectedLanguages.CollectionChanged += (sender, args) => OnPropertyChanged("SelectedLanguages");
             SelectSaveLocationCommand = new RelayCommand(SelectSaveLocationCommandHandler);
             ExportCommand = new RelayCommand(ExportCommandHandler);
 
-            mExportBackgroundWorker = new BackgroundWorker
+            _exportBackgroundWorker = new BackgroundWorker
             {
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
-            mExportBackgroundWorker.DoWork += ExportBackgroundWorkerOnDoWork;
-            mExportBackgroundWorker.RunWorkerCompleted += ExportBackgroundWorkerOnRunWorkerCompleted;
-            mExportBackgroundWorker.ProgressChanged += ExportBackgroundWorkerOnProgressChanged;
+            _exportBackgroundWorker.DoWork += ExportBackgroundWorkerOnDoWork;
+            _exportBackgroundWorker.RunWorkerCompleted += ExportBackgroundWorkerOnRunWorkerCompleted;
+            _exportBackgroundWorker.ProgressChanged += ExportBackgroundWorkerOnProgressChanged;
         }
 
         private void ExportCommandHandler()
@@ -169,12 +157,12 @@ namespace Loci.ViewModels
 
         public void SetRootNode(BaseNode rootNode)
         {
-            mRootNode = rootNode;
+            _rootNode = rootNode;
         }
 
         public void CancelExport()
         {
-            mExportBackgroundWorker.CancelAsync();
+            _exportBackgroundWorker.CancelAsync();
         }
 
         #endregion
@@ -185,7 +173,7 @@ namespace Loci.ViewModels
         {
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog
             {
-                FileName = mRootNode.Name,
+                FileName = _rootNode.Name,
                 DefaultExt = ".xlsx",
                 Filter = "Excel document (.xlsx)|*.xlsx"
             };
@@ -205,15 +193,13 @@ namespace Loci.ViewModels
 
         #region Background worker
 
-        private void ExportBackgroundWorkerOnProgressChanged(object sender,
-            ProgressChangedEventArgs progressChangedEventArgs)
+        private void ExportBackgroundWorkerOnProgressChanged(object sender, ProgressChangedEventArgs progressChangedEventArgs)
         {
             ExportProgress = progressChangedEventArgs.ProgressPercentage;
             ExportStatusString = progressChangedEventArgs.UserState as string;
         }
 
-        private void ExportBackgroundWorkerOnRunWorkerCompleted(object sender,
-            RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
+        private void ExportBackgroundWorkerOnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
         {
             IsExporting = false;
         }
@@ -250,7 +236,7 @@ namespace Loci.ViewModels
                 }
 
                 var rowCount = 2;
-                var allResources = SolutionLoader.GetAllResourcesUnderNode(mRootNode).ToList();
+                var allResources = SolutionLoader.GetAllResourcesUnderNode(_rootNode).ToList();
 
                 var total = allResources.Count();
                 var resourceCount = 1;
@@ -265,12 +251,16 @@ namespace Loci.ViewModels
                     {
                         if (!SolutionLoader.IsResXNodeTranslatable(pNode)) continue;
                         if (pNode.Name.ToLowerInvariant().Contains("tooltip")) continue;
-                        //if (mExcludePatterns != null && mExcludePatterns.IsMatch(pNode.Name)) continue; //regex here
+                        //if (_excludePatterns != null && _excludePatterns.IsMatch(pNode.Name)) continue; //regex here
 
 
                         var resXnodeValue = SolutionLoader.GetResXNodeValue(pNode);
-                        if (String.IsNullOrWhiteSpace(resXnodeValue.ToString())) continue;
-                        if (mExcludePatterns != null && mExcludePatterns.IsMatch((string)resXnodeValue)) continue; //regex here
+                        if (string.IsNullOrWhiteSpace(resXnodeValue.ToString())) continue;
+                        if (resXnodeValue.ToString().Contains("CustomizationFormText"))
+                        {
+                            var t = 0;
+                        }
+                        if (_excludePatterns != null && (_excludePatterns.IsMatch((string)resXnodeValue) || _excludePatterns.IsMatch(pNode.Name))) continue; //regex here
                         worksheet.Cells[rowCount, 1].Value = resource.Location;
                         worksheet.Cells[rowCount, 2].Value = pNode.Name;
                         worksheet.Cells[rowCount, 3].Value = resXnodeValue;
@@ -285,11 +275,9 @@ namespace Loci.ViewModels
                             if (resXnode != null)
                                 obj = SolutionLoader.GetResXNodeValue(resXnode);
                             worksheet.Cells[rowCount, column + 4].Value = obj;
-                            if (IsUntranslated((string) obj))
-                            {
-                                untranslated++;
-                                allTranslated = false;
-                            }
+                            if (!IsUntranslated((string) obj)) continue;
+                            untranslated++;
+                            allTranslated = false;
                         }
                         rowCount++;
                         if (allTranslated && exportFormat == ExcelFormat.ExportOnlyUntranslatedResources)
@@ -307,15 +295,15 @@ namespace Loci.ViewModels
 
         #region Private methods
 
-        private bool IsUntranslated(string value)
+        private static bool IsUntranslated(string value)
         {
-            return String.IsNullOrWhiteSpace(value);
+            return string.IsNullOrWhiteSpace(value);
         }
 
         private void ExportToExcel()
         {
             IsExporting = true;
-            mExportBackgroundWorker.RunWorkerAsync(ExportExcelFormat);
+            _exportBackgroundWorker.RunWorkerAsync(ExportExcelFormat);
         }
 
         #endregion
@@ -324,9 +312,9 @@ namespace Loci.ViewModels
 
         public void Dispose()
         {
-            mExportBackgroundWorker.DoWork -= ExportBackgroundWorkerOnDoWork;
-            mExportBackgroundWorker.RunWorkerCompleted -= ExportBackgroundWorkerOnRunWorkerCompleted;
-            mExportBackgroundWorker.ProgressChanged -= ExportBackgroundWorkerOnProgressChanged;
+            _exportBackgroundWorker.DoWork -= ExportBackgroundWorkerOnDoWork;
+            _exportBackgroundWorker.RunWorkerCompleted -= ExportBackgroundWorkerOnRunWorkerCompleted;
+            _exportBackgroundWorker.ProgressChanged -= ExportBackgroundWorkerOnProgressChanged;
         }
 
         #endregion

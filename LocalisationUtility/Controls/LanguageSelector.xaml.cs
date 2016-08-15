@@ -55,7 +55,7 @@ namespace Loci.Controls
 
         #region Commands
 
-        public ICommand AddCommand { get; private set; }
+        public RelayCommand AddCommand { get; private set; }
         public ICommand UpCommand { get; private set; }
         public ICommand DownCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
@@ -102,6 +102,7 @@ namespace Loci.Controls
                 if (Equals(_selectedAvailableLanguage, value)) return;
                 _selectedAvailableLanguage = value;
                 OnPropertyChanged("SelectedAvailableLanguage");
+                AddCommand.RaiseCanExecuteChanged();
             }
         }
 

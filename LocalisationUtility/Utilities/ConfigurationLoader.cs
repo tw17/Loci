@@ -29,11 +29,13 @@ namespace Loci.Utilities
         /// <param name="configFile">The configuration file.</param>
         public void SaveConfiguration(Configuration configuration, string configFile)
         {
-            var serializableConfiguration = new SerializableConfiguration();
-            serializableConfiguration.ExcludePatterns = configuration.ExcludePatterns.ToList();
-            serializableConfiguration.NeutralLanguage = configuration.NeutralLanguage.Name;
-            serializableConfiguration.SupportedLanguages = configuration.SupportedLanguages.Select(l=>l.Name).ToList();
-            serializableConfiguration.VisualStudioSolutionPath = configuration.VisualStudioSolutionPath;
+            var serializableConfiguration = new SerializableConfiguration
+            {
+                ExcludePatterns = configuration.ExcludePatterns.ToList(),
+                NeutralLanguage = configuration.NeutralLanguage.Name,
+                SupportedLanguages = configuration.SupportedLanguages.Select(l => l.Name).ToList(),
+                VisualStudioSolutionPath = configuration.VisualStudioSolutionPath
+            };
 
             var serializer = new XmlSerializer(typeof(SerializableConfiguration));
             using (TextWriter writer = new StreamWriter(configFile))

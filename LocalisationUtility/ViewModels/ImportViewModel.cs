@@ -17,12 +17,12 @@ namespace Loci.ViewModels
     {
         #region Private Fields
 
-        private BaseNode mRootNode;
-        private BackgroundWorker mImportBackgroundWorker;
-        private string mExcelFileLocation;
-        private bool mIsImporting;
-        private double mImportProgress;
-        private string mImportStatusString;
+        private BaseNode _rootNode;
+        private readonly BackgroundWorker _importBackgroundWorker;
+        private string _excelFileLocation;
+        private bool _isImporting;
+        private double _importProgress;
+        private string _importStatusString;
 
         #endregion
 
@@ -38,40 +38,34 @@ namespace Loci.ViewModels
 
         public bool IsImporting
         {
-            get { return mIsImporting; }
+            get { return _isImporting; }
             set
             {
-                if (mIsImporting != value)
-                {
-                    mIsImporting = value;
-                    OnPropertyChanged("IsImporting");
-                }
+                if (_isImporting == value) return;
+                _isImporting = value;
+                OnPropertyChanged("IsImporting");
             }
         }
 
         public double ImportProgress
         {
-            get { return mImportProgress; }
+            get { return _importProgress; }
             private set
             {
-                if (mImportProgress != value)
-                {
-                    mImportProgress = value;
-                    OnPropertyChanged("ImportProgress");
-                }
+                if (Equals(_importProgress, value)) return;
+                _importProgress = value;
+                OnPropertyChanged("ImportProgress");
             }
         }
 
         public string ImportStatusString
         {
-            get { return mImportStatusString; }
+            get { return _importStatusString; }
             private set
             {
-                if (mImportStatusString != value)
-                {
-                    mImportStatusString = value;
-                    OnPropertyChanged("ImportStatusString");
-                }
+                if (_importStatusString == value) return;
+                _importStatusString = value;
+                OnPropertyChanged("ImportStatusString");
             }
         }
 
@@ -83,14 +77,12 @@ namespace Loci.ViewModels
         /// </value>
         public string ExcelFileLocation
         {
-            get { return mExcelFileLocation; }
+            get { return _excelFileLocation; }
             set
             {
-                if (mExcelFileLocation != value)
-                {
-                    mExcelFileLocation = value;
-                    OnPropertyChanged("ExcelFileLocation");
-                }
+                if (_excelFileLocation == value) return;
+                _excelFileLocation = value;
+                OnPropertyChanged("ExcelFileLocation");
             }
         }
 
@@ -100,12 +92,12 @@ namespace Loci.ViewModels
 
         public void CancelImport()
         {
-            mImportBackgroundWorker.CancelAsync();
+            _importBackgroundWorker.CancelAsync();
         }
 
         public void SetRootNode(BaseNode rootNode)
         {
-            mRootNode = rootNode;
+            _rootNode = rootNode;
         }
 
         #endregion
@@ -117,14 +109,14 @@ namespace Loci.ViewModels
             SelectFileLocationCommand = new RelayCommand(SelectFileLocationCommandHandler);
             ImportCommand = new RelayCommand(ImportCommandHandler);
 
-            mImportBackgroundWorker = new BackgroundWorker
+            _importBackgroundWorker = new BackgroundWorker
             {
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
-            mImportBackgroundWorker.DoWork += ImportBackgroundWorkerOnDoWork;
-            mImportBackgroundWorker.RunWorkerCompleted += ImportBackgroundWorkerOnRunWorkerCompleted;
-            mImportBackgroundWorker.ProgressChanged += ImportBackgroundWorkerOnProgressChanged;
+            _importBackgroundWorker.DoWork += ImportBackgroundWorkerOnDoWork;
+            _importBackgroundWorker.RunWorkerCompleted += ImportBackgroundWorkerOnRunWorkerCompleted;
+            _importBackgroundWorker.ProgressChanged += ImportBackgroundWorkerOnProgressChanged;
         }
 
         #endregion
@@ -139,11 +131,13 @@ namespace Loci.ViewModels
         private void SelectFileLocationCommandHandler()
         {
             // Create OpenFileDialog 
-            var dlg = new Microsoft.Win32.OpenFileDialog();
+            var dlg = new Microsoft.Win32.OpenFileDialog
+            {
+                DefaultExt = ".xlsx",
+                Filter = "Excel document (.xlsx)|*.xlsx"
+            };
 
             // Set filter for file extension and default file extension 
-            dlg.DefaultExt = ".xlsx";
-            dlg.Filter = "Excel document (.xlsx)|*.xlsx";
 
             // Display OpenFileDialog by calling ShowDialog method 
             var result = dlg.ShowDialog();
@@ -162,7 +156,7 @@ namespace Loci.ViewModels
         private void ImportExcel()
         {
             IsImporting = true;
-            mImportBackgroundWorker.RunWorkerAsync();
+            _importBackgroundWorker.RunWorkerAsync();
         }
 
         #endregion
@@ -181,9 +175,9 @@ namespace Loci.ViewModels
 
         private void ImportBackgroundWorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
         {
-            List<string> errorFiles = new List<string>();
+            var errorFiles = new List<string>();
             var newFile = new FileInfo(ExcelFileLocation);
-            int notexist = 0;
+            var notexist = 0;
             using (var package = new ExcelPackage(newFile))
             {
                 var worksheet = package.Workbook.Worksheets.FirstOrDefault();
@@ -191,7 +185,7 @@ namespace Loci.ViewModels
 
                 for (var column = 4; column <= worksheet.Dimension.Columns; column++)
                 {
-                    Dictionary<string, List<Tuple<string, string>>> resources = new Dictionary<string, List<Tuple<string, string>>>();
+                    var resources = new Dictionary<string, List<Tuple<string, string>>>();
 
                     var stringLanguage = worksheet.Cells[1, column].Value.ToString();
                     var cultureInfo = CultureInfo.GetCultureInfo(stringLanguage);
@@ -221,7 +215,7 @@ namespace Loci.ViewModels
             
         }
 
-        private void SaveResourcesold(string resourceFileLocation, List<Tuple<string, string>> newValues)
+        private void SaveResourcesold(string resourceFileLocation, IEnumerable<Tuple<string, string>> newValues)
         {
             var existing = SolutionLoader.GetResXNodes(resourceFileLocation);
             foreach (var newValue in newValues)
@@ -235,32 +229,25 @@ namespace Loci.ViewModels
 
         public static void SaveResources(string path, List<Tuple<string, string>> newValues, CultureInfo culture)
         {
-            string cultureResXfileName = SolutionLoader.GetCultureResXFileName(path, culture);
-            List<ResXDataNode> resXnodes1 = SolutionLoader.GetResXNodes(path);
-            List<ResXDataNode> resXnodes2 = SolutionLoader.GetResXNodes(cultureResXfileName);
-            using (ResXResourceWriter resXresourceWriter = new ResXResourceWriter(cultureResXfileName))
+            var cultureResXfileName = SolutionLoader.GetCultureResXFileName(path, culture);
+            var resXnodes1 = SolutionLoader.GetResXNodes(path);
+            var resXnodes2 = SolutionLoader.GetResXNodes(cultureResXfileName);
+            using (var resXresourceWriter = new ResXResourceWriter(cultureResXfileName))
             {
-                foreach (ResXDataNode resXdataNode in resXnodes2)
+                foreach (var resXdataNode in resXnodes2)
                 {
                     if (!SolutionLoader.IsResXNodeTranslatable(resXdataNode) && SolutionLoader.FindResXNode(resXnodes1, resXdataNode.Name) != null)
                         resXresourceWriter.AddResource(resXdataNode);
                 }
 
-                foreach (ResXDataNode resXdataNode in resXnodes2)
+                foreach (var resXdataNode in resXnodes2)
                 {
-                    if (SolutionLoader.IsResXNodeTranslatable(resXdataNode))
-                    {
-                        var newValue = newValues.FirstOrDefault(p => p.Item1 == resXdataNode.Name);
-                        if (newValue != null)
-                        {
-                            resXresourceWriter.AddResource(new ResXDataNode(newValue.Item1, newValue.Item2)); 
-                        }
-                        else
-                        {
-                            resXresourceWriter.AddResource(resXdataNode);      
-                        }
-                        newValues.Remove(newValue);
-                    }
+                    if (!SolutionLoader.IsResXNodeTranslatable(resXdataNode)) continue;
+                    var newValue = newValues.FirstOrDefault(p => p.Item1 == resXdataNode.Name);
+                    resXresourceWriter.AddResource(newValue != null
+                        ? new ResXDataNode(newValue.Item1, newValue.Item2)
+                        : resXdataNode);
+                    newValues.Remove(newValue);
                 }
                 foreach (var newValue in newValues)
                 {
