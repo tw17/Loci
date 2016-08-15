@@ -88,7 +88,7 @@ namespace Loci.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Localization Tool.
+        ///   Looks up a localized string similar to Loci.
         /// </summary>
         public static string LocalizationToolTitle {
             get {
