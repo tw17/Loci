@@ -6,10 +6,10 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using System.Windows;
 using GalaSoft.MvvmLight.Messaging;
-using LocalisationUtility.Events;
-using LocalisationUtility.Models;
+using Loci.Events;
+using Loci.Models;
 
-namespace LocalisationUtility.ViewModels
+namespace Loci.ViewModels
 {
     public class SettingsViewModel : BaseViewModel
     {

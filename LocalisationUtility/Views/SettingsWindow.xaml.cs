@@ -1,6 +1,6 @@
-﻿using LocalisationUtility.ViewModels;
+﻿using Loci.ViewModels;
 
-namespace LocalisationUtility.Views
+namespace Loci.Views
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml

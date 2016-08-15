@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Xml.Serialization;
 
-namespace LocalisationUtility.Models
+namespace Loci.Models
 {
     public class Configuration
     {

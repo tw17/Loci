@@ -3,10 +3,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
-using LocalisationUtility.Interfaces;
-using LocalisationUtility.Models;
+using Loci.Interfaces;
+using Loci.Models;
 
-namespace LocalisationUtility.Utilities
+namespace Loci.Utilities
 {
     public class ConfigurationLoader : IConfigurationLoader
     {

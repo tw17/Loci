@@ -1,4 +1,4 @@
-﻿namespace LocalisationUtility.Enums
+﻿namespace Loci.Enums
 {
     public enum TreeNodeType
     {

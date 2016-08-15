@@ -1,6 +1,6 @@
-﻿using LocalisationUtility.Enums;
+﻿using Loci.Enums;
 
-namespace LocalisationUtility.Models
+namespace Loci.Models
 {
     public class Folder : BaseNode
     {

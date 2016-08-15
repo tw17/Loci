@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Xml.Linq;
 
-namespace LocalisationUtility.Models
+namespace Loci.Models
 {
     public class ResourceFile
     {

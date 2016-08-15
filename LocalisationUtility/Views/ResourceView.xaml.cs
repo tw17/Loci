@@ -1,4 +1,4 @@
-﻿namespace LocalisationUtility.Views
+﻿namespace Loci.Views
 {
     /// <summary>
     /// Interaction logic for ResourceView.xaml

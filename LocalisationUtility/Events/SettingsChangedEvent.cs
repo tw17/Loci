@@ -1,4 +1,4 @@
-﻿namespace LocalisationUtility.Events
+﻿namespace Loci.Events
 {
     public class SettingsChangedEvent
     {

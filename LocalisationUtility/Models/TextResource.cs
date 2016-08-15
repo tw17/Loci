@@ -1,4 +1,4 @@
-﻿namespace LocalisationUtility.Models
+﻿namespace Loci.Models
 {
     public class TextResource
     {

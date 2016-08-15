@@ -9,9 +9,9 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using OfficeOpenXml;
-using LocalisationUtility.Models;
+using Loci.Models;
 
-namespace LocalisationUtility.ViewModels
+namespace Loci.ViewModels
 {
 
     #region Enums

@@ -1,10 +1,10 @@
 ﻿using System.Windows;
-using LocalisationUtility.Models;
-using LocalisationUtility.ViewModels;
+using Loci.Models;
+using Loci.ViewModels;
 using Xceed.Wpf.Toolkit;
 using Xceed.Wpf.Toolkit.Core;
 
-namespace LocalisationUtility.Views
+namespace Loci.Views
 {
     /// <summary>
     /// Interaction logic for ExportWindow.xaml

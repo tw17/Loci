@@ -11,13 +11,13 @@ using System.Windows.Input;
 using Autofac;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using LocalisationUtility.Enums;
-using LocalisationUtility.Events;
-using LocalisationUtility.Interfaces;
-using LocalisationUtility.Models;
-using LocalisationUtility.Views;
+using Loci.Enums;
+using Loci.Events;
+using Loci.Interfaces;
+using Loci.Models;
+using Loci.Views;
 
-namespace LocalisationUtility.ViewModels
+namespace Loci.ViewModels
 {
     public class MainViewModel : BaseViewModel, IDisposable
     {

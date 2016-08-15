@@ -7,11 +7,11 @@ using System.Linq;
 using System.Resources;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
-using LocalisationUtility.Models;
+using Loci.Models;
 
 using OfficeOpenXml;
 
-namespace LocalisationUtility.ViewModels
+namespace Loci.ViewModels
 {
     public class ImportViewModel : BaseViewModel
     {

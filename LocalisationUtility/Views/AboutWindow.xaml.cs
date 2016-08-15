@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Windows;
 
-namespace LocalisationUtility.Views
+namespace Loci.Views
 {
     /// <summary>
     /// Interaction logic for AboutWindow.xaml

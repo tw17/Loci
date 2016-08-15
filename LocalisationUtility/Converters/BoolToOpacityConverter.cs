@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Data;
 
-namespace LocalisationUtility.Converters
+namespace Loci.Converters
 {
     public class BoolToOpacityConverter : IValueConverter
     {

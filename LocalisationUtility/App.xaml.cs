@@ -3,13 +3,13 @@ using System.Windows;
 using Autofac;
 using GalaSoft.MvvmLight.Messaging;
 using log4net;
-using LocalisationUtility.Interfaces;
-using LocalisationUtility.Models;
-using LocalisationUtility.Utilities;
-using LocalisationUtility.ViewModels;
-using LocalisationUtility.Views;
+using Loci.Interfaces;
+using Loci.Models;
+using Loci.Utilities;
+using Loci.ViewModels;
+using Loci.Views;
 
-namespace LocalisationUtility
+namespace Loci
 {
     /// <summary>
     /// Interaction logic for App.xaml

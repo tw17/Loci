@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using LocalisationUtility.Enums;
+using Loci.Enums;
 
-namespace LocalisationUtility.Models
+namespace Loci.Models
 {
     public class Solution : BaseNode
     {

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 
-namespace LocalisationUtility.Events
+namespace Loci.Events
 {
     public class NewProjectCreatedEventArgs
     {

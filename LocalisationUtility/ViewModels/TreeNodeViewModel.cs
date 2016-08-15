@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LocalisationUtility.Enums;
-using LocalisationUtility.Models;
+using Loci.Enums;
+using Loci.Models;
 
-namespace LocalisationUtility.ViewModels
+namespace Loci.ViewModels
 {
     public class TreeNodeViewModel : BaseViewModel
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using LocalisationUtility.ViewModels;
+using Loci.ViewModels;
 
-namespace LocalisationUtility
+namespace Loci
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

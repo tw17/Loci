@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace LocalisationUtility.Converters
+namespace Loci.Converters
 {
     public class CollectionToBoolConverter : IValueConverter
     {

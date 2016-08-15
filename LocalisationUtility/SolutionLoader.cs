@@ -7,10 +7,10 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Xml.Linq;
-using LocalisationUtility.Enums;
-using LocalisationUtility.Models;
+using Loci.Enums;
+using Loci.Models;
 
-namespace LocalisationUtility
+namespace Loci
 {
     /// <summary>
     /// Class for loading .sln solution files

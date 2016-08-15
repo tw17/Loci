@@ -4,9 +4,9 @@ using System.Linq;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using LocalisationUtility.Events;
+using Loci.Events;
 
-namespace LocalisationUtility.ViewModels
+namespace Loci.ViewModels
 {
     public class NewProjectViewModel : BaseViewModel
     {

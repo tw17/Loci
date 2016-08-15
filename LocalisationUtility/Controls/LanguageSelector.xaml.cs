@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 
-namespace LocalisationUtility.Controls
+namespace Loci.Controls
 {
     public class CultureInfoToStringConverter : IValueConverter
     {

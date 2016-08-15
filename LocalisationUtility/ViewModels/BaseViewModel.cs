@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace LocalisationUtility.ViewModels
+namespace Loci.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
