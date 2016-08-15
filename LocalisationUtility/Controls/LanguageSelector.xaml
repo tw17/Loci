@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="LocalisationUtility.Controls.LanguageSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:LocalisationUtility.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="250">
+    <UserControl.Resources>
+        <controls:CultureInfoToStringConverter x:Key="CultureInfoToStringConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <ComboBox ItemsSource="{Binding AvailableLanguages}"
+                              SelectedItem="{Binding SelectedAvailableLanguage, Mode=TwoWay}" Grid.Row="0"
+                              Grid.Column="0" SelectedIndex="0" Margin="0,0,4,4">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Converter={StaticResource CultureInfoToStringConverter}}" />
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Button Content="Add" Grid.Row="0" Grid.Column="1" Command="{Binding AddCommand}" Margin="0,0,0,4"
+                            Padding="2" />
+        <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding SelectedLanguages}"
+                             SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" SelectionMode="Single">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <TextBlock Text="{Binding Converter={StaticResource CultureInfoToStringConverter}}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel Grid.Row="1" Grid.Column="2" Margin="4,0,0,4">
+            <Button Command="{Binding UpCommand}" HorizontalAlignment="Center" Padding="4" Margin="0,0,0,4">
+                <Image Source="../Resources/Images/up_16x16.png" Height="16" Width="16" />
+            </Button>
+            <Button Command="{Binding DownCommand}" HorizontalAlignment="Center" Padding="4"
+                                Margin="0,0,0,8">
+                <Image Source="../Resources/Images/down_16x16.png" Height="16" Width="16" />
+            </Button>
+            <Button Command="{Binding DeleteCommand}" HorizontalAlignment="Center" Padding="4">
+                <Image Source="../Resources/Images/delete_16x16.png" Height="16" Width="16" />
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

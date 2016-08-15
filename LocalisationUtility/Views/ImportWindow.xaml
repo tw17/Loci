@@ -1,0 +1,65 @@
+﻿<Window x:Class="LocalisationUtility.Views.ImportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:converters="clr-namespace:LocalisationUtility.Converters"
+        Title="ImportWindow" Height="300" Width="500">
+    <Window.Resources>
+        <converters:ValidStringToBoolConverter x:Key="ValidStringToBoolConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <xctk:InverseBoolConverter x:Key="InverseBoolConverter" />
+    </Window.Resources>
+    <Grid>
+        <xctk:Wizard FinishButtonClosesWindow="True" Cancel="Wizard_OnCancel" HelpButtonVisibility="Hidden"
+                     ExteriorPanelMinWidth="0" Next="Wizard_OnNext">
+            <xctk:WizardPage x:Name="ExcelLocation"
+                             Title="Import Excel file"
+                             Description="Select the Excel file you want to import"
+                             NextPage="{Binding ElementName=ImportProgress}"
+                             CanSelectNextPage="{Binding ExcelFileLocation, Converter={StaticResource ValidStringToBoolConverter}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Select Excel file to import:" />
+                    <TextBox Grid.Row="1" Height="22" Grid.Column="0" Text="{Binding ExcelFileLocation}"
+                             VerticalContentAlignment="Center" Margin="0,2" />
+                    <Button Grid.Row="1" Grid.Column="1" Margin="4,0,0,0" Command="{Binding SelectFileLocationCommand}"
+                            Width="30" VerticalAlignment="Center">
+                        <Image Source="../Resources/Images/Browse20x20.png" HorizontalAlignment="Center"
+                               VerticalAlignment="Center" Width="18" Height="18" />
+                    </Button>
+                </Grid>
+            </xctk:WizardPage>
+            <xctk:WizardPage x:Name="ImportProgress"
+                             Title="Importing"
+                             Description="Importing resources from Excel" CanSelectNextPage="False"
+                             CanSelectPreviousPage="False"
+                             CanFinish="{Binding IsImporting, Converter={StaticResource InverseBoolConverter}}">
+                <Grid>
+                    <Grid Visibility="{Binding IsImporting, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="{Binding ImportStatusString}" />
+                        <ProgressBar Grid.Row="1" Value="{Binding ImportProgress}" Height="24" />
+                    </Grid>
+                    <Grid
+                        Visibility="{Binding IsImporting, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                        <TextBlock Margin="4" Text="Import completed!" />
+                    </Grid>
+                </Grid>
+            </xctk:WizardPage>
+        </xctk:Wizard>
+    </Grid>
+</Window>

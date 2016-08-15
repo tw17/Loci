@@ -1,0 +1,104 @@
+﻿<Window x:Class="LocalisationUtility.Views.NewProjectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:converters="clr-namespace:LocalisationUtility.Converters"
+        xmlns:controls="clr-namespace:LocalisationUtility.Controls"
+        Name="MainNewProjectWindow"
+        Title="New Project" Height="400" Width="500" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <converters:ValidStringToBoolConverter x:Key="ValidStringToBoolConverter" />
+        <controls:CultureInfoToStringConverter x:Key="CultureInfoToStringConverter"/>
+    </Window.Resources>
+    <Grid>
+        <xctk:Wizard FinishButtonClosesWindow="True" HelpButtonVisibility="Hidden"
+                     ExteriorPanelMinWidth="0" Finish="Wizard_OnFinish">
+            <xctk:WizardPage x:Name="SelectSolutionPage"
+                             Title="Create a new localization project"
+                             Description="Select the Visual Studio solution to localise"
+                             NextPage="{Binding ElementName=LanguageSelection}"
+                             CanSelectNextPage="{Binding SolutionLocation, Converter={StaticResource ValidStringToBoolConverter}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Select solution file:" />
+                    <TextBox Grid.Row="1" Height="22" Grid.Column="0" Text="{Binding SolutionLocation}"
+                             VerticalContentAlignment="Center" Margin="0,2" />
+                    <Button Grid.Row="1" Grid.Column="1" Margin="4,0,0,0" Command="{Binding SelectSolutionLocationCommand}"
+                            Width="30" VerticalAlignment="Center">
+                        <Image Source="../Resources/Images/Browse20x20.png" HorizontalAlignment="Center"
+                               VerticalAlignment="Center" Width="18" Height="18" />
+                    </Button>
+                </Grid>
+            </xctk:WizardPage>
+            <xctk:WizardPage x:Name="LanguageSelection"
+                             Title="Languages"
+                             Description="Select the languages associated with this project"
+                             NextPage="{Binding ElementName=SelectSaveLocation}"
+                             PreviousPage="{Binding ElementName=SelectSolutionPage}">
+                <Grid Margin="4,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Neutral Language:" Margin="0,4,4,4"/>
+                    <ComboBox Grid.Row="1" Margin="0,0,0,4" SelectedItem="{Binding NeutralLanguage}" ItemsSource="{Binding AvailableLanguages}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Converter={StaticResource CultureInfoToStringConverter}}" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Grid.Row="2" Text="Localised Language:" Margin="0,4,0,0"/>
+                    <controls:LanguageSelector Grid.Row="3" AvailableLanguages="{Binding DataContext.AvailableLanguages, Mode=TwoWay, ElementName=MainNewProjectWindow}" SelectedLanguages="{Binding DataContext.SelectedLanguages, Mode=TwoWay, ElementName=MainNewProjectWindow}"/>
+                </Grid>
+            </xctk:WizardPage>
+            <xctk:WizardPage x:Name="SelectSaveLocation"
+                             Title="Select save location"
+                             Description="Select the location to save this localisation project"
+                             PreviousPage="{Binding ElementName=LanguageSelection}"
+                             CanFinish="{Binding SaveLocation, Converter={StaticResource ValidStringToBoolConverter}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Select solution file:" />
+                    <TextBox Grid.Row="1" Height="22" Grid.Column="0" Text="{Binding SaveLocation}"
+                             VerticalContentAlignment="Center" Margin="0,2" />
+                    <Button Grid.Row="1" Grid.Column="1" Margin="4,0,0,0" Command="{Binding SelectSaveLocationCommand}"
+                            Width="30" VerticalAlignment="Center">
+                        <Image Source="../Resources/Images/Browse20x20.png" HorizontalAlignment="Center"
+                               VerticalAlignment="Center" Width="18" Height="18" />
+                    </Button>
+                </Grid>
+            </xctk:WizardPage>
+        </xctk:Wizard>
+    </Grid>
+</Window>

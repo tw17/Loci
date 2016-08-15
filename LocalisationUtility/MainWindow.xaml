@@ -1,0 +1,128 @@
+﻿<Window x:Class="LocalisationUtility.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:resx="clr-namespace:Loci.Properties"
+        xmlns:converters="clr-namespace:LocalisationUtility.Converters"
+        xmlns:effects="clr-namespace:LocalisationUtility.Effects"
+        Title="{x:Static resx:Resources.LocalizationToolTitle}"
+        Height="473.843" Width="867.349"
+        Icon="Resources/Icons/Icon.ico"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
+    </Window.Resources>
+    <Grid Background="WhiteSmoke">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Menu IsMainMenu="True" Grid.Row="0">
+            <MenuItem Header="_Project">
+                <MenuItem Header="_New" Command="{Binding NewProjectCommand}" />
+                <MenuItem Header="_Load" Command="{Binding LoadProjectCommand}" />
+                <Separator />
+                <MenuItem Header="_Settings" Command="{Binding SettingsCommand}" IsEnabled="{Binding IsLoaded}"/>
+                <Separator />
+                <MenuItem Header="_Export" Command="{Binding ExportCommand}" IsEnabled="{Binding IsLoaded}"/>
+                <MenuItem Header="_Import" Command="{Binding ImportCommand}" IsEnabled="{Binding IsLoaded}"/>
+                <Separator />
+                <MenuItem Header="_Diff" Command="{Binding DiffCommand}" IsEnabled="{Binding IsLoaded}"/>
+                <MenuItem Header="_Pre Fill" Command="{Binding PreFillCommand}" IsEnabled="{Binding IsLoaded}"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About" Command="{Binding AboutCommand}" />
+            </MenuItem>
+        </Menu>
+
+        <ToolBar Grid.Row="1" IsManipulationEnabled="False" HorizontalAlignment="Stretch" Background="WhiteSmoke"
+                 Loaded="ToolBar_Loaded">
+            <Button Command="{Binding ExportCommand}"  IsEnabled="{Binding IsLoaded}">
+                <Button.ToolTip>Export</Button.ToolTip>
+                <Image Source="Resources/Images/Export_24x24.png" Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
+                    <Image.Effect>
+                        <effects:GrayscaleEffect DesaturationFactor="{Binding IsLoaded}"/>
+                    </Image.Effect>
+                </Image>
+            </Button>
+            <Button Command="{Binding ImportCommand}" IsEnabled="{Binding IsLoaded}">
+                <Button.ToolTip>Import</Button.ToolTip>
+                <Image Source="Resources/Images/Import_24x24.png" Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
+                    <Image.Effect>
+                        <effects:GrayscaleEffect DesaturationFactor="{Binding IsLoaded}"/>
+                    </Image.Effect>
+                </Image>
+            </Button>
+            <Button Command="{Binding DiffCommand}" IsEnabled="{Binding IsLoaded}">
+                <Button.ToolTip>Import</Button.ToolTip>
+                <Image Source="Resources/Images/Diff_24x24.png" Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
+                    <Image.Effect>
+                        <effects:GrayscaleEffect DesaturationFactor="{Binding IsLoaded}"/>
+                    </Image.Effect>
+                </Image>
+            </Button>
+            <Button Command="{Binding PreFillCommand}" IsEnabled="{Binding IsLoaded}">
+                <Button.ToolTip>Import</Button.ToolTip>
+                <Image Source="Resources/Images/Edit_24x24.png" Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
+                    <Image.Effect>
+                        <effects:GrayscaleEffect DesaturationFactor="{Binding IsLoaded}"/>
+                    </Image.Effect>
+                </Image>
+            </Button>
+            <Button Command="{Binding SettingsCommand}" IsEnabled="{Binding IsLoaded}">
+                <Button.ToolTip>Settings</Button.ToolTip>
+                <Image Source="Resources/Images/Settings_24x24.png" Height="22" Width="22" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
+                    <Image.Effect>
+                        <effects:GrayscaleEffect DesaturationFactor="{Binding IsLoaded}"/>
+                    </Image.Effect>
+                </Image>
+            </Button>
+        </ToolBar>
+
+        <Grid Grid.Row="2" Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TreeView Name="ResourceTreeView" ItemsSource="{Binding FirstGeneration}" Grid.Column="0"
+                      VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                      SelectedItemChanged="ResourceTreeView_OnSelectedItemChanged">
+                <TreeView.ItemContainerStyle>
+                    <!-- 
+        This Style binds a TreeViewItem to a PersonViewModel. 
+        -->
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                        <Setter Property="FontWeight" Value="Normal" />
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{Binding Icon}" />
+                            <TextBlock Text="{Binding Name}" Margin="4,0,0,0" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+            <GridSplitter Grid.Column="1" Grid.Row="0"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Stretch"
+                          ShowsPreview="True"
+                          Width="5" />
+            <ContentPresenter Grid.Row="0" Grid.Column="2" Content="{Binding SelectedNodeDetailsView}" />
+        </Grid>
+    </Grid>
+</Window>
