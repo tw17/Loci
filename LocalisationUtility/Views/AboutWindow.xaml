@@ -1,7 +1,8 @@
 ﻿<Window x:Class="Loci.Views.AboutWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="About" WindowStyle="ToolWindow" Height="197" Width="281" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:resx="clr-namespace:Loci.Properties"
+        Title="About" WindowStyle="ToolWindow" Height="184.896" Width="281" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -51,8 +52,8 @@
             <TextBlock Name="VersionTextBlock"/>
         </StackPanel>
         <StackPanel Grid.Row="3" VerticalAlignment="Center" Margin="4">
-            <!--<TextBlock Text="© 2016 Pacom Systems Pty Ltd." HorizontalAlignment="Center"/>
-            <TextBlock Text="All rights reserved." HorizontalAlignment="Center"/>-->
+            <TextBlock Text="Contributors" HorizontalAlignment="Center" FontSize="10" FontWeight="Bold"/>
+            <TextBlock Text="{x:Static resx:Resources.contributors}" FontSize="10" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Window>

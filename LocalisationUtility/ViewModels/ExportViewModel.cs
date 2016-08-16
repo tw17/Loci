@@ -244,7 +244,7 @@ namespace Loci.ViewModels
                 var untranslated = 0;
                 foreach (var resource in allResources.TakeWhile(resource => !worker.CancellationPending))
                 {
-                    worker.ReportProgress((int) ((double) resourceCount/(double) total*100.0), resource.Location);
+                    worker.ReportProgress((int) ((double) resourceCount/total*100.0), resource.Location);
                     foreach (
                         var pNode in
                             SolutionLoader.GetResXNodes(resource.Location).TakeWhile(n => !worker.CancellationPending))

@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="Loci.Resources.Images.SettingsIcon"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Viewbox Stretch="Uniform">
+        <Canvas Width="40" Height="40">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <MatrixTransform Matrix="1.3437193 0 0 1.3437193 -7.2486888 -6.3563706"/>
+                </Canvas.RenderTransform>
+                <Canvas>
+                    <Canvas>
+                        <Canvas>
+                            <Canvas>
+                                <Path Fill="#FF95A5A6">
+                                    <Path.Data>
+                                        <PathGeometry Figures="M 31.9 11.6 28.1 15.5 24.6 11.9 28.4 8 C 26.3 7.2 24.3 7.8 22.7 9.3 21.2 10.8 20.8 13 21.3 14.9 L 12 24.3 c -1.1 -0.1 -2.3 0.3 -3.1 1.1 -1.5 1.6 -1.5 4.1 0 5.7 1.5 1.6 4 1.6 5.6 0 0.9 -0.9 1.2 -2.1 1.1 -3.3 l 9.3 -9.4 c 1.9 0.6 4.1 0.3 5.6 -1.3 1.6 -1.4 2.2 -3.4 1.4 -5.5 z m -19 17.6 c -0.6 0.6 -1.5 0.6 -2.1 0 -0.6 -0.6 -0.6 -1.5 0 -2.1 0.6 -0.6 1.5 -0.6 2.1 0 0.6 0.5 0.6 1.5 0 2.1 z" FillRule="evenodd"/>
+                                    </Path.Data>
+                                </Path>
+                            </Canvas>
+                        </Canvas>
+                    </Canvas>
+                </Canvas>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+</UserControl>

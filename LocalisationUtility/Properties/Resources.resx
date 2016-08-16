@@ -120,6 +120,10 @@
   <data name="Compare" xml:space="preserve">
     <value>Compare</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="contributors" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\contributors.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="Export" xml:space="preserve">
     <value>Export</value>
   </data>

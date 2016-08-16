@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="Loci.Resources.Images.PrefillIcon"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Viewbox Stretch="Uniform">
+        <Canvas Width="40" Height="40">
+            <Canvas>
+                <Canvas.RenderTransform>
+                    <MatrixTransform Matrix="1.2699309 0 0 1.387838 -4.6704332 -8.405797"/>
+                </Canvas.RenderTransform>
+                <Canvas>
+                    <Canvas>
+                        <Path Fill="#FF2C3E50">
+                            <Path.Data>
+                                <PathGeometry Figures="M 33 12 C 33 10.3 31.7 9 30 9 L 9 9 C 7.3 9 6 10.3 6 12 l 0 17 c 0 1.7 1.3 3 3 3 l 21 0 c 1.7 0 3 -1.3 3 -3 l 0 -17 z" FillRule="evenodd"/>
+                            </Path.Data>
+                        </Path>
+                    </Canvas>
+                    <Canvas>
+                        <Path Fill="#FF1ABC9C">
+                            <Path.Data>
+                                <PathGeometry Figures="m 24 11 0 3 7 0 0 -3 -7 0 z m -8 3 7 0 0 -3 -7 0 0 3 z m -8 0 7 0 0 -3 -7 0 0 3 z" FillRule="evenodd"/>
+                            </Path.Data>
+                        </Path>
+                    </Canvas>
+                    <Rectangle Canvas.Left="16" Canvas.Top="23" Width="7" Height="3" Name="rect54" Fill="#FFECF0F1"/>
+                    <Rectangle Canvas.Left="16" Canvas.Top="27" Width="7" Height="3" Name="rect56" Fill="#FF1ABC9C"/>
+                    <Rectangle Canvas.Left="16" Canvas.Top="19" Width="7" Height="3" Name="rect58" Fill="#FF1ABC9C"/>
+                    <Rectangle Canvas.Left="16" Canvas.Top="15" Width="7" Height="3" Name="rect60" Fill="#FFECF0F1"/>
+                    <Rectangle Canvas.Left="8" Canvas.Top="15" Width="7" Height="3" Name="rect62" Fill="#FFECF0F1"/>
+                    <Rectangle Canvas.Left="8" Canvas.Top="23" Width="7" Height="3" Name="rect64" Fill="#FFECF0F1"/>
+                    <Rectangle Canvas.Left="8" Canvas.Top="19" Width="7" Height="3" Name="rect66" Fill="#FF1ABC9C"/>
+                    <Rectangle Canvas.Left="24" Canvas.Top="15" Width="7" Height="3" Name="rect68" Fill="#FFECF0F1"/>
+                    <Rectangle Canvas.Left="24" Canvas.Top="19" Width="7" Height="3" Name="rect70" Fill="#FF1ABC9C"/>
+                    <Rectangle Canvas.Left="24" Canvas.Top="27" Width="7" Height="3" Name="rect72" Fill="#FF1ABC9C"/>
+                    <Rectangle Canvas.Left="8" Canvas.Top="27" Width="7" Height="3" Name="rect74" Fill="#FF1ABC9C"/>
+                    <Rectangle Canvas.Left="24" Canvas.Top="23" Width="7" Height="3" Name="rect76" Fill="#FFECF0F1"/>
+                </Canvas>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+</UserControl>

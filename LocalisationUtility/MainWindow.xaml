@@ -4,6 +4,7 @@
         xmlns:resx="clr-namespace:Loci.Properties"
         xmlns:converters="clr-namespace:Loci.Converters"
         xmlns:effects="clr-namespace:Loci.Effects"
+        xmlns:images="clr-namespace:Loci.Resources.Images"
         Title="{x:Static resx:Resources.LocalizationToolTitle}"
         Height="473.843" Width="867.349"
         Icon="Resources/Icons/Icon.ico"
@@ -11,13 +12,13 @@
     <Window.Resources>
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
     </Window.Resources>
-    <Grid Background="WhiteSmoke">
+    <Grid Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Menu IsMainMenu="True" Grid.Row="0" Background="WhiteSmoke">
+        <Menu IsMainMenu="True" Grid.Row="0" Background="White">
             <MenuItem Header="_Project">
                 <MenuItem Header="_New" Command="{Binding NewProjectCommand}" />
                 <MenuItem Header="_Load" Command="{Binding LoadProjectCommand}" />
@@ -35,47 +36,47 @@
             </MenuItem>
         </Menu>
 
-        <ToolBar Grid.Row="1" IsManipulationEnabled="False" HorizontalAlignment="Stretch" Background="WhiteSmoke" ToolBarTray.IsLocked="True"
+        <ToolBar Grid.Row="1" IsManipulationEnabled="False" HorizontalAlignment="Stretch" Background="White" ToolBarTray.IsLocked="True"
                  Loaded="ToolBar_Loaded">
             <Button Command="{Binding ExportCommand}"  IsEnabled="{Binding IsLoaded}">
                 <Button.ToolTip>Export</Button.ToolTip>
-                <Image Source="Resources/Images/Export_24x24.png" Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
-                    <Image.Effect>
+                <images:ExportIcon Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
+                    <UserControl.Effect>
                         <effects:GrayscaleEffect DesaturationFactor="{Binding IsLoaded}"/>
-                    </Image.Effect>
-                </Image>
+                    </UserControl.Effect>
+                </images:ExportIcon>
             </Button>
             <Button Command="{Binding ImportCommand}" IsEnabled="{Binding IsLoaded}">
                 <Button.ToolTip>Import</Button.ToolTip>
-                <Image Source="Resources/Images/Import_24x24.png" Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
-                    <Image.Effect>
+                <images:ImportIcon Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
+                    <UserControl.Effect>
                         <effects:GrayscaleEffect DesaturationFactor="{Binding IsLoaded}"/>
-                    </Image.Effect>
-                </Image>
+                    </UserControl.Effect>
+                </images:ImportIcon>
             </Button>
             <Button Command="{Binding DiffCommand}" IsEnabled="{Binding IsLoaded}">
-                <Button.ToolTip>Import</Button.ToolTip>
-                <Image Source="Resources/Images/Diff_24x24.png" Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
-                    <Image.Effect>
+                <Button.ToolTip>Compare</Button.ToolTip>
+                <images:DiffIcon Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
+                    <UserControl.Effect>
                         <effects:GrayscaleEffect DesaturationFactor="{Binding IsLoaded}"/>
-                    </Image.Effect>
-                </Image>
+                    </UserControl.Effect>
+                </images:DiffIcon>
             </Button>
             <Button Command="{Binding PreFillCommand}" IsEnabled="{Binding IsLoaded}">
-                <Button.ToolTip>Import</Button.ToolTip>
-                <Image Source="Resources/Images/Edit_24x24.png" Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
-                    <Image.Effect>
+                <Button.ToolTip>Prefill</Button.ToolTip>
+                <images:PrefillIcon Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
+                    <UserControl.Effect>
                         <effects:GrayscaleEffect DesaturationFactor="{Binding IsLoaded}"/>
-                    </Image.Effect>
-                </Image>
+                    </UserControl.Effect>
+                </images:PrefillIcon>
             </Button>
             <Button Command="{Binding SettingsCommand}" IsEnabled="{Binding IsLoaded}">
                 <Button.ToolTip>Settings</Button.ToolTip>
-                <Image Source="Resources/Images/Settings_24x24.png" Height="22" Width="22" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
-                    <Image.Effect>
+                <images:SettingsIcon Height="24" Width="24" Opacity="{Binding IsLoaded, Converter={StaticResource BoolToOpacityConverter}}">
+                    <UserControl.Effect>
                         <effects:GrayscaleEffect DesaturationFactor="{Binding IsLoaded}"/>
-                    </Image.Effect>
-                </Image>
+                    </UserControl.Effect>
+                </images:SettingsIcon>
             </Button>
         </ToolBar>
 

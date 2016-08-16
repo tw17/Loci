@@ -70,6 +70,15 @@ namespace Loci.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tom W.
+        /// </summary>
+        public static string contributors {
+            get {
+                return ResourceManager.GetString("contributors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export.
         /// </summary>
         public static string Export {

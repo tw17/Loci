@@ -15,6 +15,7 @@ namespace Loci.Views
             var fullVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var shortVersion = fullVersion.Substring(0, fullVersion.LastIndexOf(".", StringComparison.Ordinal));
             VersionTextBlock.Text = shortVersion;
+            //var contributors = Properties.Resources.contributors.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);            
         }
     }
 }

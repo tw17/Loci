@@ -118,6 +118,21 @@
     <Compile Include="Models\Solution.cs" />
     <Compile Include="Models\TextResource.cs" />
     <Compile Include="Models\BaseNode.cs" />
+    <Compile Include="Resources\Images\DiffIcon.xaml.cs">
+      <DependentUpon>DiffIcon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Images\ExportIcon.xaml.cs">
+      <DependentUpon>ExportIcon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Images\ImportIcon.xaml.cs">
+      <DependentUpon>ImportIcon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Images\PrefillIcon.xaml.cs">
+      <DependentUpon>PrefillIcon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Images\SettingsIcon.xaml.cs">
+      <DependentUpon>SettingsIcon.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SolutionLoader.cs" />
     <Compile Include="Utilities\ConfigurationLoader.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
@@ -161,6 +176,26 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\Images\DiffIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Images\ExportIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Images\ImportIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Images\PrefillIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Images\SettingsIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -269,6 +304,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons\Diff.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\contributors.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
