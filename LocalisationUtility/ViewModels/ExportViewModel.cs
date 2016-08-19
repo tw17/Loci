@@ -37,7 +37,8 @@ namespace Loci.ViewModels
         private double _exportProgress;
         private string _exportStatusString;
         private bool _isExporting;
-        private readonly Regex _excludePatterns;
+        private readonly Regex _keyExcludePatterns;
+        private readonly Regex _valueExcludePatterns;
 
         #endregion
 
@@ -119,16 +120,8 @@ namespace Loci.ViewModels
             _messenger = messenger;
             _configuration = configuration;
 
-            if (_configuration.ExcludePatterns.Count > 0)
-            {
-                var stringPattern = string.Join("|", _configuration.ExcludePatterns);
-                var finalPattern = $"^({stringPattern.Replace(@".", @"\.").Replace(@"*", @"\S*")})$";
-                _excludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            }
-            else
-            {
-                _excludePatterns = null;
-            }
+            _keyExcludePatterns = _configuration.KeyExcludeRegex;
+            _valueExcludePatterns = _configuration.ValueExcludeRegex;
 
             AvailableLanguages = new ObservableCollection<CultureInfo>(_configuration.SupportedLanguages.ToArray());
             SelectedLanguages = new ObservableCollection<CultureInfo>();
@@ -244,23 +237,23 @@ namespace Loci.ViewModels
                 var untranslated = 0;
                 foreach (var resource in allResources.TakeWhile(resource => !worker.CancellationPending))
                 {
+                    if(resource.Location.Contains("Z9")) continue;
                     worker.ReportProgress((int) ((double) resourceCount/total*100.0), resource.Location);
                     foreach (
                         var pNode in
                             SolutionLoader.GetResXNodes(resource.Location).TakeWhile(n => !worker.CancellationPending))
                     {
                         if (!SolutionLoader.IsResXNodeTranslatable(pNode)) continue;
-                        if (pNode.Name.ToLowerInvariant().Contains("tooltip")) continue;
+                        //if (pNode.Name.ToLowerInvariant().Contains("tooltip")) continue;
                         //if (_excludePatterns != null && _excludePatterns.IsMatch(pNode.Name)) continue; //regex here
-
 
                         var resXnodeValue = SolutionLoader.GetResXNodeValue(pNode);
                         if (string.IsNullOrWhiteSpace(resXnodeValue.ToString())) continue;
-                        if (resXnodeValue.ToString().Contains("CustomizationFormText"))
-                        {
-                            var t = 0;
-                        }
-                        if (_excludePatterns != null && (_excludePatterns.IsMatch((string)resXnodeValue) || _excludePatterns.IsMatch(pNode.Name))) continue; //regex here
+
+                        if (_keyExcludePatterns != null && _keyExcludePatterns.IsMatch(pNode.Name)) continue;
+
+                        if (_valueExcludePatterns != null && _valueExcludePatterns.IsMatch((string)resXnodeValue)) continue;
+
                         worksheet.Cells[rowCount, 1].Value = resource.Location;
                         worksheet.Cells[rowCount, 2].Value = pNode.Name;
                         worksheet.Cells[rowCount, 3].Value = resXnodeValue;

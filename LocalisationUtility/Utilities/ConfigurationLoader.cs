@@ -19,7 +19,9 @@ namespace Loci.Utilities
 
             public List<string> SupportedLanguages { get; set; }
 
-            public List<string> ExcludePatterns { get; set; }
+            public List<string> KeyExcludePatterns { get; set; }
+
+            public List<string> ValueExcludePatterns { get; set; }
         }
 
         /// <summary>
@@ -31,7 +33,8 @@ namespace Loci.Utilities
         {
             var serializableConfiguration = new SerializableConfiguration
             {
-                ExcludePatterns = configuration.ExcludePatterns.ToList(),
+                KeyExcludePatterns = configuration.KeyExcludePatterns.ToList(),
+                ValueExcludePatterns = configuration.ValueExcludePatterns.ToList(),
                 NeutralLanguage = configuration.NeutralLanguage.Name,
                 SupportedLanguages = configuration.SupportedLanguages.Select(l => l.Name).ToList(),
                 VisualStudioSolutionPath = configuration.VisualStudioSolutionPath
@@ -62,7 +65,8 @@ namespace Loci.Utilities
                     VisualStudioSolutionPath = obj.VisualStudioSolutionPath,
                     NeutralLanguage = CultureInfo.GetCultureInfo(obj.NeutralLanguage),
                     SupportedLanguages = obj.SupportedLanguages.Select(CultureInfo.GetCultureInfo).ToList(),
-                    ExcludePatterns = obj.ExcludePatterns.ToList()
+                    KeyExcludePatterns = obj.KeyExcludePatterns.ToList(),
+                    ValueExcludePatterns = obj.ValueExcludePatterns.ToList()
                 };
             }
         }

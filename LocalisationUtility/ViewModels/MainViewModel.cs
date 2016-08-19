@@ -30,7 +30,8 @@ namespace Loci.ViewModels
         private UserControl _selectedNodeDetailsView;
         private readonly DataTable _dataTable = new DataTable();
         private BaseNode _selectedNode;
-        private Regex _excludePatterns;
+        private Regex _keyExcludePatterns;
+        private Regex _valueExcludePatterns;
         private bool _isLoaded;
 
         public DataView DefaultView => _dataTable.AsDataView();
@@ -104,7 +105,8 @@ namespace Loci.ViewModels
 
         private void NewProjectCreatedEventHandler(NewProjectCreatedEventArgs args)
         {
-            _configuration.ExcludePatterns.Clear();
+            _configuration.KeyExcludePatterns.Clear();
+            _configuration.ValueExcludePatterns.Clear();
 
             _configuration.VisualStudioSolutionPath = args.VisualStudioSolutionPath;
 
@@ -128,15 +130,25 @@ namespace Loci.ViewModels
         private void SettingsChangedEventHandler(SettingsChangedEvent args)
         {
             _configurationLoader.SaveConfiguration(_configuration, _configuration.LocalisationProjectPath);
-            if (_configuration.ExcludePatterns.Count > 0)
+            if (_configuration.KeyExcludePatterns.Count > 0)
             {
-                var stringPattern = string.Join("|", _configuration.ExcludePatterns);
+                var stringPattern = string.Join("|", _configuration.KeyExcludePatterns);
                 var finalPattern = $"^({stringPattern.Replace(@".", @"\.").Replace(@"*", @"\S*")})$";
-                _excludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);   
+                _keyExcludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);   
             }
             else
             {
-                _excludePatterns = null;
+                _keyExcludePatterns = null;
+            }
+            if (_configuration.ValueExcludePatterns.Count > 0)
+            {
+                var stringPattern = string.Join("|", _configuration.ValueExcludePatterns);
+                var finalPattern = $"^({stringPattern.Replace(@".", @"\.").Replace(@"*", @"\S*")})$";
+                _valueExcludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            }
+            else
+            {
+                _valueExcludePatterns = null;
             }
             if (_selectedNode != null)
                 SetSelectedNode(_selectedNode);
@@ -173,8 +185,11 @@ namespace Loci.ViewModels
             _configuration.SupportedLanguages.Clear();
             _configuration.SupportedLanguages.AddRange(config.SupportedLanguages.ToArray());
 
-            _configuration.ExcludePatterns.Clear();
-            _configuration.ExcludePatterns.AddRange(config.ExcludePatterns.ToArray());
+            _configuration.KeyExcludePatterns.Clear();
+            _configuration.KeyExcludePatterns.AddRange(config.KeyExcludePatterns.ToArray());
+
+            _configuration.ValueExcludePatterns.Clear();
+            _configuration.ValueExcludePatterns.AddRange(config.ValueExcludePatterns.ToArray());
 
             _configuration.NeutralLanguage = config.NeutralLanguage;
             _configuration.VisualStudioSolutionPath = config.VisualStudioSolutionPath;
@@ -202,15 +217,26 @@ namespace Loci.ViewModels
 
         private void PreFillCommandHandler()
         {
-            if (_configuration.ExcludePatterns.Count > 0)
+            if (_configuration.KeyExcludePatterns.Count > 0)
             {
-                var stringPattern = string.Join("|", _configuration.ExcludePatterns);
+                var stringPattern = string.Join("|", _configuration.KeyExcludePatterns);
                 var finalPattern = $"^({stringPattern.Replace(@".", @"\.").Replace(@"*", @"\S*")})$";
-                _excludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                _keyExcludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
             }
             else
             {
-                _excludePatterns = null;
+                _keyExcludePatterns = null;
+            }
+
+            if (_configuration.ValueExcludePatterns.Count > 0)
+            {
+                var stringPattern = string.Join("|", _configuration.ValueExcludePatterns);
+                var finalPattern = $"^({stringPattern.Replace(@".", @"\.").Replace(@"*", @"\S*")})$";
+                _valueExcludePatterns = new Regex(finalPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            }
+            else
+            {
+                _valueExcludePatterns = null;
             }
 
             var lookUpDictionary = new Dictionary<string, string>();
@@ -232,12 +258,12 @@ namespace Loci.ViewModels
                 foreach (var pNode in SolutionLoader.GetResXNodes(resource.Location))
                 {
                     if (!SolutionLoader.IsResXNodeTranslatable(pNode)) continue;
-                    //if (_excludePatterns != null && _excludePatterns.IsMatch(pNode.Name)) continue; //regex here
+                    //if (_keyExcludePatterns != null && _keyExcludePatterns.IsMatch(pNode.Name)) continue; //regex here
 
 
                     var resXnodeValue = SolutionLoader.GetResXNodeValue(pNode);
                     if (String.IsNullOrWhiteSpace(resXnodeValue.ToString())) continue;
-                    if (_excludePatterns != null && _excludePatterns.IsMatch((string)resXnodeValue)) continue; //regex here
+                    if (_keyExcludePatterns != null && _keyExcludePatterns.IsMatch((string)resXnodeValue)) continue; //regex here
                     //worksheet.Cells[rowCount, 1].Value = resource.Location;
                     //worksheet.Cells[rowCount, 2].Value = pNode.Name;
                     //worksheet.Cells[rowCount, 3].Value = resXnodeValue;
@@ -386,7 +412,7 @@ namespace Loci.ViewModels
             foreach (var pNode in resXnodes)
             {
                 var resXnodeValue = SolutionLoader.GetResXNodeValue(pNode);
-                if (SolutionLoader.IsResXNodeTranslatable(pNode) && (_excludePatterns == null || !_excludePatterns.IsMatch(pNode.Name))) //regex here
+                if (SolutionLoader.IsResXNodeTranslatable(pNode) && (_keyExcludePatterns == null || !_keyExcludePatterns.IsMatch(pNode.Name))) //regex here
                 {
                     var dataRow = _dataTable.NewRow();
                     dataRow[0] = pNode.Name;

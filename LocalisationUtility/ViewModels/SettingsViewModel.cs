@@ -17,7 +17,8 @@ namespace Loci.ViewModels
 
         private readonly Configuration _configuration;
         private readonly IMessenger _messenger;
-        private string _excludePatternsString;
+        private string _keyExcludePatternsString;
+        private string _valueExcludePatternsString;
 
         #endregion
 
@@ -30,19 +31,36 @@ namespace Loci.ViewModels
         #region Public Properties
 
         /// <summary>
-        /// Gets or sets the exclude patterns string.
+        /// Gets or sets the key exclude patterns string.
         /// </summary>
         /// <value>
-        /// The exclude patterns string.
+        /// The key exclude patterns string.
         /// </value>
-        public string ExcludePatternsString
+        public string KeyExcludePatternsString
         {
-            get { return _excludePatternsString; }
+            get { return _keyExcludePatternsString; }
             set
             {
-                if (_excludePatternsString == value) return;
-                _excludePatternsString = value;
-                OnPropertyChanged("ExcludePatternsString");
+                if (_keyExcludePatternsString == value) return;
+                _keyExcludePatternsString = value;
+                OnPropertyChanged("KeyExcludePatternsString");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the value exclude patterns string.
+        /// </summary>
+        /// <value>
+        /// The value exclude patterns string.
+        /// </value>
+        public string ValueExcludePatternsString
+        {
+            get { return _valueExcludePatternsString; }
+            set
+            {
+                if (_valueExcludePatternsString == value) return;
+                _valueExcludePatternsString = value;
+                OnPropertyChanged("ValueExcludePatternsString");
             }
         }
 
@@ -59,16 +77,22 @@ namespace Loci.ViewModels
             NeutralLanguage = _configuration.NeutralLanguage;
             AvailableLanguages = new ObservableCollection<CultureInfo>(CultureInfo.GetCultures(CultureTypes.AllCultures).Except(new [] {CultureInfo.InvariantCulture}));
             SelectedLanguages = new ObservableCollection<CultureInfo>(_configuration.SupportedLanguages.ToArray());
-            ExcludePatternsString = string.Join("\r\n", _configuration.ExcludePatterns);
+            KeyExcludePatternsString = string.Join("\r\n", _configuration.KeyExcludePatterns);
+            ValueExcludePatternsString = string.Join("\r\n", _configuration.ValueExcludePatterns);
             OkCommand = new RelayCommand<Window>(OKCommandHandler);
         }
 
         private void OKCommandHandler(Window window)
         {
-            _configuration.ExcludePatterns.Clear();
-            if (!string.IsNullOrWhiteSpace(ExcludePatternsString))
+            _configuration.KeyExcludePatterns.Clear();
+            _configuration.ValueExcludePatterns.Clear();
+            if (!string.IsNullOrWhiteSpace(KeyExcludePatternsString))
             {
-                _configuration.ExcludePatterns.AddRange(ExcludePatternsString.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None));   
+                _configuration.KeyExcludePatterns.AddRange(KeyExcludePatternsString.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None));   
+            }
+            if (!string.IsNullOrWhiteSpace(ValueExcludePatternsString))
+            {
+                _configuration.ValueExcludePatterns.AddRange(ValueExcludePatternsString.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None));
             }
             _configuration.NeutralLanguage = NeutralLanguage;
             _configuration.SupportedLanguages.Clear();
